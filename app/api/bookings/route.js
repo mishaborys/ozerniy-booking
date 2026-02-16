@@ -86,22 +86,31 @@ export async function POST(request) {
     }
     
     const booking = await createBooking(data);
-    
+
+    console.log('✅ Booking created successfully:', booking.id);
+
     // Відправляємо повідомлення користувачу
     const gazebos = await getGazebos();
     const gazebo = gazebos.find(g => g.id === data.gazeboId);
-    
-    await sendBookingConfirmation(data.userId, {
-      gazeboName: gazebo?.name || 'Альтанка',
-      date: format(new Date(data.bookingDate), 'd MMMM yyyy, EEEE', { locale: uk }),
-      timeSlot: data.timeSlot,
-      houseNumber: data.houseNumber,
-      apartmentNumber: data.apartmentNumber,
-    });
-    
-    return NextResponse.json({ 
-      success: true, 
-      booking 
+
+    console.log('📧 Attempting to send confirmation to user:', data.userId);
+
+    try {
+      await sendBookingConfirmation(data.userId, {
+        gazeboName: gazebo?.name || 'Альтанка',
+        date: format(new Date(data.bookingDate), 'd MMMM yyyy, EEEE', { locale: uk }),
+        timeSlot: data.timeSlot,
+        houseNumber: data.houseNumber,
+        apartmentNumber: data.apartmentNumber,
+      });
+    } catch (notificationError) {
+      // Логуємо помилку але не падаємо - бронювання вже створено
+      console.error('⚠️ Failed to send notification, but booking was created:', notificationError);
+    }
+
+    return NextResponse.json({
+      success: true,
+      booking
     });
   } catch (error) {
     console.error('Create booking error:', error);
