@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { format, addDays, startOfToday, isBefore } from 'date-fns';
 import { uk } from 'date-fns/locale';
+import SubscriptionConfirmModal from './SubscriptionConfirmModal';
 
 export default function Calendar({ 
   onSlotSelect, 
@@ -16,6 +17,8 @@ export default function Calendar({
   const [loading, setLoading] = useState(true);
   const [userBooking, setUserBooking] = useState(null);
   const [userSubscriptions, setUserSubscriptions] = useState([]);
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const [pendingSubscription, setPendingSubscription] = useState(null);
 
   useEffect(() => {
     fetchBookings();
@@ -82,7 +85,15 @@ export default function Calendar({
     );
   };
 
-  const handleSubscribeClick = async (timeSlot) => {
+  const handleSubscribeClick = (timeSlot) => {
+    // Зберігаємо timeSlot і відкриваємо модальне вікно
+    setPendingSubscription(timeSlot);
+    setShowSubscriptionModal(true);
+  };
+
+  const handleConfirmSubscription = async () => {
+    if (!pendingSubscription) return;
+
     try {
       const response = await fetch('/api/subscriptions', {
         method: 'POST',
@@ -92,7 +103,7 @@ export default function Calendar({
           username: window.Telegram?.WebApp?.initDataUnsafe?.user?.username,
           firstName: window.Telegram?.WebApp?.initDataUnsafe?.user?.first_name || 'Користувач',
           bookingDate: format(selectedDate, 'yyyy-MM-dd'),
-          timeSlot,
+          timeSlot: pendingSubscription,
         }),
       });
 
@@ -102,12 +113,22 @@ export default function Calendar({
         throw new Error(data.error || 'Помилка підписки');
       }
 
+      // Закриваємо модальне вікно
+      setShowSubscriptionModal(false);
+      setPendingSubscription(null);
+
       // Оновлюємо список підписок
       fetchBookings();
-      alert('✅ Ви підписались на повідомлення про цей слот!');
     } catch (error) {
       alert('❌ ' + error.message);
+      setShowSubscriptionModal(false);
+      setPendingSubscription(null);
     }
+  };
+
+  const handleCancelSubscription = () => {
+    setShowSubscriptionModal(false);
+    setPendingSubscription(null);
   };
 
   const handleUnsubscribeClick = async (timeSlot) => {
@@ -260,7 +281,7 @@ export default function Calendar({
                             : 'bg-blue-50 text-blue-800 border border-blue-300 hover:bg-blue-100'
                         }`}
                       >
-                        {isSubscribed ? '🔕 Відписатись від повідомлень' : '🔔 Підписатись на повідомлення'}
+                        {isSubscribed ? '🔕 Відписатись від повідомлень' : '🔔 Повідомити якщо звільниться'}
                       </button>
                     )}
                   </div>
@@ -275,6 +296,16 @@ export default function Calendar({
         <div className="text-center text-sm text-tg-hint mt-4">
           У вас вже є бронювання на цей день. Натисніть на нього, щоб переглянути деталі або скасувати.
         </div>
+      )}
+
+      {/* Модальне вікно підтвердження підписки */}
+      {showSubscriptionModal && pendingSubscription && (
+        <SubscriptionConfirmModal
+          timeSlot={pendingSubscription}
+          date={format(selectedDate, 'd MMMM yyyy, EEEE', { locale: uk })}
+          onConfirm={handleConfirmSubscription}
+          onClose={handleCancelSubscription}
+        />
       )}
     </div>
   );

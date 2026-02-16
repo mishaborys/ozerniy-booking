@@ -4,7 +4,10 @@ import {
   getUserSlotSubscriptions,
   isSlotFullyBooked,
 } from '@/lib/db';
+import { sendSubscriptionCreatedNotification } from '@/lib/telegram';
 import { NextResponse } from 'next/server';
+import { format } from 'date-fns';
+import { uk } from 'date-fns/locale';
 
 // GET - отримати підписки користувача
 export async function GET(request) {
@@ -58,6 +61,18 @@ export async function POST(request) {
     }
 
     const subscription = await createSlotSubscription(data);
+
+    // Відправляємо Telegram повідомлення про створення підписки
+    try {
+      await sendSubscriptionCreatedNotification(data.userId, {
+        date: format(new Date(data.bookingDate), 'd MMMM yyyy, EEEE', { locale: uk }),
+        timeSlot: data.timeSlot,
+      });
+      console.log('✅ Subscription created notification sent');
+    } catch (notificationError) {
+      console.error('⚠️ Failed to send subscription notification:', notificationError);
+      // Не падаємо - підписка вже створена
+    }
 
     return NextResponse.json({
       success: true,
