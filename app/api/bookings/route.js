@@ -102,6 +102,7 @@ export async function POST(request) {
         timeSlot: data.timeSlot,
         houseNumber: data.houseNumber,
         apartmentNumber: data.apartmentNumber,
+        phoneNumber: data.phoneNumber,
       });
     } catch (notificationError) {
       // Логуємо помилку але не падаємо - бронювання вже створено
