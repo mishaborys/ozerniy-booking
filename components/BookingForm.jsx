@@ -66,20 +66,20 @@ export default function BookingForm({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
-          <h2 className="text-2xl font-bold text-tg-text mb-4">Бронювання альтанки</h2>
-          
+          <h2 className="text-2xl font-bold mb-4" style={{ color: '#1a1a1a' }}>Бронювання альтанки</h2>
+
           <div className="bg-blue-50 rounded-lg p-4 mb-6 space-y-2">
             <div className="flex justify-between">
-              <span className="text-gray-600">Альтанка:</span>
-              <span className="font-semibold">{gazeboName}</span>
+              <span style={{ color: '#666666' }}>Альтанка:</span>
+              <span className="font-semibold" style={{ color: '#1a1a1a' }}>{gazeboName}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">Час:</span>
-              <span className="font-semibold">{timeSlot}</span>
+              <span style={{ color: '#666666' }}>Час:</span>
+              <span className="font-semibold" style={{ color: '#1a1a1a' }}>{timeSlot}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600">Дата:</span>
-              <span className="font-semibold">{format(date, 'dd.MM.yyyy')}</span>
+              <span style={{ color: '#666666' }}>Дата:</span>
+              <span className="font-semibold" style={{ color: '#1a1a1a' }}>{format(date, 'dd.MM.yyyy')}</span>
             </div>
           </div>
 
@@ -91,7 +91,7 @@ export default function BookingForm({
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium mb-1" style={{ color: '#333333' }}>
                 Ім'я <span className="text-red-500">*</span>
               </label>
               <input
@@ -105,8 +105,8 @@ export default function BookingForm({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Номер будинку <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium mb-1" style={{ color: '#333333' }}>
+                Адреса будинку <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -114,12 +114,12 @@ export default function BookingForm({
                 value={formData.houseNumber}
                 onChange={(e) => setFormData({ ...formData, houseNumber: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tg-button focus:border-transparent"
-                placeholder="Наприклад: 5А"
+                placeholder="Наприклад: Приозерний 6"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium mb-1" style={{ color: '#333333' }}>
                 Номер квартири <span className="text-red-500">*</span>
               </label>
               <input
@@ -133,7 +133,7 @@ export default function BookingForm({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium mb-1" style={{ color: '#333333' }}>
                 Номер телефону <span className="text-red-500">*</span>
               </label>
               <input
@@ -151,7 +151,8 @@ export default function BookingForm({
                 type="button"
                 onClick={onCancel}
                 disabled={loading}
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 disabled:opacity-50"
+                className="flex-1 px-4 py-3 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 disabled:opacity-50"
+                style={{ color: '#333333' }}
               >
                 Скасувати
               </button>
