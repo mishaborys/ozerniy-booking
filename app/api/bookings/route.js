@@ -1,11 +1,11 @@
-import { 
-  getGazebos, 
-  getBookings, 
-  createBooking, 
+import {
+  getGazebos,
+  getBookings,
+  createBooking,
   getUserBookings,
-  deleteBooking 
+  deleteBooking
 } from '@/lib/db';
-import { generateTimeSlots, sendBookingConfirmation, getSlotEmoji } from '@/lib/telegram';
+import { generateTimeSlots, sendBookingConfirmation, sendBookingCancellation, getSlotEmoji } from '@/lib/telegram';
 import { NextResponse } from 'next/server';
 import { format } from 'date-fns';
 import { uk } from 'date-fns/locale';
@@ -128,26 +128,41 @@ export async function DELETE(request) {
     const { searchParams } = new URL(request.url);
     const bookingId = searchParams.get('id');
     const userId = searchParams.get('userId');
-    
+
     if (!bookingId || !userId) {
       return NextResponse.json(
         { error: 'Booking ID and User ID are required' },
         { status: 400 }
       );
     }
-    
+
     const deleted = await deleteBooking(bookingId, userId);
-    
+
     if (!deleted) {
       return NextResponse.json(
         { error: 'Booking not found or you don\'t have permission' },
         { status: 404 }
       );
     }
-    
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Booking deleted successfully' 
+
+    console.log('✅ Booking deleted successfully:', bookingId);
+    console.log('📧 Attempting to send cancellation notification to user:', userId);
+
+    // Відправляємо повідомлення про скасування
+    try {
+      await sendBookingCancellation(userId, {
+        gazeboName: deleted.gazebo_name,
+        date: format(new Date(deleted.booking_date), 'd MMMM yyyy, EEEE', { locale: uk }),
+        timeSlot: deleted.time_slot,
+      });
+    } catch (notificationError) {
+      // Логуємо помилку але не падаємо - бронювання вже видалено
+      console.error('⚠️ Failed to send cancellation notification, but booking was deleted:', notificationError);
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'Booking deleted successfully'
     });
   } catch (error) {
     console.error('Delete booking error:', error);
