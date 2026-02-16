@@ -100,6 +100,7 @@ export default function BookingForm({
                 value={formData.firstName}
                 onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tg-button focus:border-transparent"
+                style={{ color: '#1a1a1a' }}
                 placeholder="Введіть ім'я"
               />
             </div>
@@ -114,6 +115,7 @@ export default function BookingForm({
                 value={formData.houseNumber}
                 onChange={(e) => setFormData({ ...formData, houseNumber: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tg-button focus:border-transparent"
+                style={{ color: '#1a1a1a' }}
                 placeholder="Наприклад: Приозерний 6"
               />
             </div>
@@ -128,6 +130,7 @@ export default function BookingForm({
                 value={formData.apartmentNumber}
                 onChange={(e) => setFormData({ ...formData, apartmentNumber: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tg-button focus:border-transparent"
+                style={{ color: '#1a1a1a' }}
                 placeholder="Наприклад: 42"
               />
             </div>
@@ -142,6 +145,7 @@ export default function BookingForm({
                 value={formData.phoneNumber}
                 onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tg-button focus:border-transparent"
+                style={{ color: '#1a1a1a' }}
                 placeholder="+380..."
               />
             </div>
