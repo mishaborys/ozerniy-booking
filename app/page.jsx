@@ -21,6 +21,7 @@ export default function Home() {
   const [showMyBookings, setShowMyBookings] = useState(false);
   const [showSubscriptions, setShowSubscriptions] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
+  const [hasSubscriptions, setHasSubscriptions] = useState(false);
 
   useEffect(() => {
     // Ініціалізація Telegram WebApp
@@ -64,7 +65,7 @@ export default function Home() {
         },
         body: JSON.stringify({ userId }),
       });
-      
+
       const data = await response.json();
       setIsMember(data.isMember);
     } catch (error) {
@@ -74,6 +75,24 @@ export default function Home() {
       setLoading(false);
     }
   };
+
+  // Перевіряємо чи є у користувача підписки
+  useEffect(() => {
+    const checkSubscriptions = async () => {
+      if (!userData?.id) return;
+
+      try {
+        const response = await fetch(`/api/subscriptions?userId=${userData.id}`);
+        const data = await response.json();
+        setHasSubscriptions(data.subscriptions && data.subscriptions.length > 0);
+      } catch (error) {
+        console.error('Failed to check subscriptions:', error);
+        setHasSubscriptions(false);
+      }
+    };
+
+    checkSubscriptions();
+  }, [userData, showSubscriptions]); // Оновлюємо коли змінюється userData або коли закривається модальне вікно підписок
 
   const handleSlotSelect = (gazeboId, gazeboName, timeSlot) => {
     setSelectedSlot({ gazeboId, gazeboName, timeSlot });
@@ -199,12 +218,14 @@ export default function Home() {
             📋 Мої бронювання
           </button>
 
-          <button
-            onClick={() => setShowSubscriptions(true)}
-            className="mt-2 w-full px-4 py-3 bg-purple-500 text-white rounded-lg font-medium hover:bg-purple-600"
-          >
-            🔔 Мої підписки
-          </button>
+          {hasSubscriptions && (
+            <button
+              onClick={() => setShowSubscriptions(true)}
+              className="mt-2 w-full px-4 py-3 bg-purple-500 text-white rounded-lg font-medium hover:bg-purple-600"
+            >
+              🔔 Мої підписки
+            </button>
+          )}
         </div>
 
         {/* Повідомлення про успішне бронювання */}
