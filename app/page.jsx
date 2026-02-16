@@ -18,6 +18,7 @@ export default function Home() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showMyBookings, setShowMyBookings] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
 
   useEffect(() => {
     // Ініціалізація Telegram WebApp
@@ -101,6 +102,18 @@ export default function Home() {
     setSelectedDate(date);
   };
 
+  const handleCopyAdmin = async () => {
+    try {
+      await navigator.clipboard.writeText('@BurdaDmytro');
+      setCopySuccess(true);
+      setTimeout(() => {
+        setCopySuccess(false);
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-tg-bg flex items-center justify-center">
@@ -134,8 +147,20 @@ export default function Home() {
               Для бронювання альтанок ви повинні бути учасником групи жильців ЖК "ОГ Гатне - чат" в Telegram.
             </p>
             <p className="text-sm text-gray-600">
-              Приєднайтесь до групи та спробуйте знову. Щоб стати учасником групи напишіть @BurdaDmytro в особисті повідомлення адресу свого проживання.
+              Приєднайтесь до групи та спробуйте знову. Щоб стати учасником групи напишіть{' '}
+              <button
+                onClick={handleCopyAdmin}
+                className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium underline cursor-pointer"
+              >
+                @BurdaDmytro
+              </button>
+              {' '}в особисті повідомлення адресу свого проживання.
             </p>
+            {copySuccess && (
+              <div className="mt-3 text-sm text-green-600 font-medium animate-pulse">
+                ✅ Тег скопійовано!
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -42,7 +42,7 @@ export default function BookingForm({
           firstName: formData.firstName,
           houseNumber: formData.houseNumber,
           apartmentNumber: formData.apartmentNumber,
-          phoneNumber: formData.phoneNumber || null,
+          phoneNumber: formData.phoneNumber,
           bookingDate: format(date, 'yyyy-MM-dd'),
           timeSlot,
         }),
@@ -134,10 +134,11 @@ export default function BookingForm({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Номер телефону (опціонально)
+                Номер телефону <span className="text-red-500">*</span>
               </label>
               <input
                 type="tel"
+                required
                 value={formData.phoneNumber}
                 onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tg-button focus:border-transparent"

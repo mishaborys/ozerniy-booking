@@ -72,7 +72,7 @@ export default function MyBookings({ userId, onClose }) {
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full my-8">
         <div className="p-6">
           <div className="flex justify-between items-start mb-4">
-            <h2 className="text-2xl font-bold text-gray-900">📋 Мої бронювання</h2>
+            <h2 className="text-2xl font-bold" style={{ color: '#1a1a1a' }}>📋 Мої бронювання</h2>
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600 text-2xl"
@@ -88,8 +88,9 @@ export default function MyBookings({ userId, onClose }) {
               className={`px-4 py-2 font-medium transition-colors ${
                 activeTab === 'active'
                   ? 'text-blue-600 border-b-2 border-blue-600'
-                  : 'text-gray-600 hover:text-gray-900'
+                  : 'border-b-2 border-transparent'
               }`}
+              style={activeTab !== 'active' ? { color: '#666666' } : {}}
             >
               Активні ({activeBookings.length})
             </button>
@@ -98,23 +99,24 @@ export default function MyBookings({ userId, onClose }) {
               className={`px-4 py-2 font-medium transition-colors ${
                 activeTab === 'history'
                   ? 'text-blue-600 border-b-2 border-blue-600'
-                  : 'text-gray-600 hover:text-gray-900'
+                  : 'border-b-2 border-transparent'
               }`}
+              style={activeTab !== 'history' ? { color: '#666666' } : {}}
             >
               Історія ({pastBookings.length})
             </button>
           </div>
 
           {loading ? (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8" style={{ color: '#666666' }}>
               Завантаження...
             </div>
           ) : displayBookings.length === 0 ? (
             <div className="text-center py-8">
               <div className="text-4xl mb-2">🏡</div>
-              <p className="text-gray-600">
-                {activeTab === 'active' 
-                  ? 'У вас поки немає активних бронювань' 
+              <p style={{ color: '#666666' }}>
+                {activeTab === 'active'
+                  ? 'У вас поки немає активних бронювань'
                   : 'Історія бронювань порожня'}
               </p>
             </div>
@@ -127,12 +129,12 @@ export default function MyBookings({ userId, onClose }) {
                 >
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <span className="text-lg font-semibold text-gray-900">
+                      <span className="text-lg font-semibold" style={{ color: '#1a1a1a' }}>
                         {booking.gazebo_name}
                       </span>
                     </div>
-                    
-                    <div className="text-gray-600 space-y-1">
+
+                    <div className="space-y-1" style={{ color: '#666666' }}>
                       <div className="font-medium">
                         📅 {format(new Date(booking.booking_date), 'd MMMM yyyy, EEEE', { locale: uk })}
                       </div>
@@ -166,7 +168,8 @@ export default function MyBookings({ userId, onClose }) {
           <div className="mt-6">
             <button
               onClick={onClose}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg font-medium hover:bg-gray-50"
+              style={{ color: '#333333' }}
             >
               Закрити
             </button>
