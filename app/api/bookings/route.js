@@ -3,9 +3,18 @@ import {
   getBookings,
   createBooking,
   getUserBookings,
-  deleteBooking
+  deleteBooking,
+  getSlotSubscribers,
+  deleteSlotSubscriptionsForSlot,
+  deleteUserSlotSubscription
 } from '@/lib/db';
-import { generateTimeSlots, sendBookingConfirmation, sendBookingCancellation, getSlotEmoji } from '@/lib/telegram';
+import {
+  generateTimeSlots,
+  sendBookingConfirmation,
+  sendBookingCancellation,
+  sendSlotAvailableNotification,
+  getSlotEmoji
+} from '@/lib/telegram';
 import { NextResponse } from 'next/server';
 import { format } from 'date-fns';
 import { uk } from 'date-fns/locale';
@@ -89,6 +98,14 @@ export async function POST(request) {
 
     console.log('✅ Booking created successfully:', booking.id);
 
+    // Видаляємо підписку користувача на цей слот (якщо вона була)
+    try {
+      await deleteUserSlotSubscription(data.userId, data.bookingDate, data.timeSlot);
+      console.log('🗑️ User subscription removed (if existed)');
+    } catch (error) {
+      console.error('⚠️ Error removing user subscription:', error);
+    }
+
     // Відправляємо повідомлення користувачу
     const gazebos = await getGazebos();
     const gazebo = gazebos.find(g => g.id === data.gazeboId);
@@ -158,6 +175,40 @@ export async function DELETE(request) {
     } catch (notificationError) {
       // Логуємо помилку але не падаємо - бронювання вже видалено
       console.error('⚠️ Failed to send cancellation notification, but booking was deleted:', notificationError);
+    }
+
+    // Повідомляємо всіх підписників про вільний слот
+    console.log('🔍 Checking for slot subscribers...');
+    try {
+      const subscribers = await getSlotSubscribers(
+        format(new Date(deleted.booking_date), 'yyyy-MM-dd'),
+        deleted.time_slot
+      );
+
+      console.log(`📬 Found ${subscribers.length} subscriber(s) for this slot`);
+
+      if (subscribers.length > 0) {
+        // Відправляємо повідомлення кожному підписнику
+        const notificationPromises = subscribers.map(subscriber =>
+          sendSlotAvailableNotification(subscriber.user_id, {
+            date: format(new Date(deleted.booking_date), 'd MMMM yyyy, EEEE', { locale: uk }),
+            timeSlot: deleted.time_slot,
+          })
+        );
+
+        await Promise.allSettled(notificationPromises);
+
+        // Видаляємо всі підписки на цей слот (оскільки слот став вільним)
+        await deleteSlotSubscriptionsForSlot(
+          format(new Date(deleted.booking_date), 'yyyy-MM-dd'),
+          deleted.time_slot
+        );
+
+        console.log('✅ All subscribers notified and subscriptions cleaned up');
+      }
+    } catch (subscriberError) {
+      console.error('⚠️ Error processing subscribers:', subscriberError);
+      // Не падаємо - бронювання вже видалено
     }
 
     return NextResponse.json({

@@ -15,6 +15,7 @@ export default function Calendar({
   const [gazebos, setGazebos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userBooking, setUserBooking] = useState(null);
+  const [userSubscriptions, setUserSubscriptions] = useState([]);
 
   useEffect(() => {
     fetchBookings();
@@ -33,9 +34,16 @@ export default function Calendar({
       
       const response = await fetch(`/api/bookings?${params}`);
       const data = await response.json();
-      
+
       setGazebos(data.gazebos);
       setUserBooking(data.userBooking);
+
+      // Завантажуємо підписки користувача
+      if (userId) {
+        const subsResponse = await fetch(`/api/subscriptions?userId=${userId}`);
+        const subsData = await subsResponse.json();
+        setUserSubscriptions(subsData.subscriptions || []);
+      }
     } catch (error) {
       console.error('Failed to fetch bookings:', error);
     } finally {
@@ -56,6 +64,75 @@ export default function Calendar({
     } else if (!userBooking) {
       // Створюємо нове бронювання
       onSlotSelect(gazebo.id, gazebo.name, slot.time);
+    }
+  };
+
+  const isSlotFullyBooked = (timeSlot) => {
+    // Перевіряємо чи всі 3 альтанки зайняті в цьому слоті
+    const bookedCount = gazebos.filter(gazebo =>
+      gazebo.slots.find(slot => slot.time === timeSlot && slot.isBooked)
+    ).length;
+    return bookedCount === 3;
+  };
+
+  const isUserSubscribedToSlot = (timeSlot) => {
+    const dateStr = format(selectedDate, 'yyyy-MM-dd');
+    return userSubscriptions.some(
+      sub => sub.booking_date === dateStr && sub.time_slot === timeSlot
+    );
+  };
+
+  const handleSubscribeClick = async (timeSlot) => {
+    try {
+      const response = await fetch('/api/subscriptions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          username: window.Telegram?.WebApp?.initDataUnsafe?.user?.username,
+          firstName: window.Telegram?.WebApp?.initDataUnsafe?.user?.first_name || 'Користувач',
+          bookingDate: format(selectedDate, 'yyyy-MM-dd'),
+          timeSlot,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Помилка підписки');
+      }
+
+      // Оновлюємо список підписок
+      fetchBookings();
+      alert('✅ Ви підписались на повідомлення про цей слот!');
+    } catch (error) {
+      alert('❌ ' + error.message);
+    }
+  };
+
+  const handleUnsubscribeClick = async (timeSlot) => {
+    const dateStr = format(selectedDate, 'yyyy-MM-dd');
+    const subscription = userSubscriptions.find(
+      sub => sub.booking_date === dateStr && sub.time_slot === timeSlot
+    );
+
+    if (!subscription) return;
+
+    try {
+      const response = await fetch(
+        `/api/subscriptions?id=${subscription.id}&userId=${userId}`,
+        { method: 'DELETE' }
+      );
+
+      if (!response.ok) {
+        throw new Error('Помилка відписки');
+      }
+
+      // Оновлюємо список підписок
+      fetchBookings();
+      alert('✅ Ви відписались від повідомлень про цей слот');
+    } catch (error) {
+      alert('❌ ' + error.message);
     }
   };
 
@@ -139,37 +216,54 @@ export default function Calendar({
               {gazebo.slots.map((slot) => {
                 const isPastDate = isBefore(selectedDate, startOfToday());
                 const isDisabled = !slot.isBooked && (userBooking || isPastDate);
-                
+                const isFullyBooked = isSlotFullyBooked(slot.time);
+                const isSubscribed = isUserSubscribedToSlot(slot.time);
+
                 return (
-                  <button
-                    key={slot.time}
-                    onClick={() => handleSlotClick(slot, gazebo)}
-                    disabled={isDisabled}
-                    className={`w-full p-3 rounded-lg text-left transition-colors ${
-                      slot.isBooked
-                        ? isPastDate
-                          ? 'bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer border border-gray-300'
-                          : 'bg-orange-50 text-orange-800 hover:bg-orange-100 cursor-pointer border border-orange-200'
-                        : isPastDate
-                        ? 'bg-gray-50 text-gray-400 cursor-not-allowed'
-                        : userBooking
-                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                        : 'bg-green-50 text-green-800 hover:bg-green-100 active:bg-green-200'
-                    }`}
-                  >
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg">{slot.emoji}</span>
-                        <div>
-                          <div className="font-medium">{slot.time}</div>
-                          <div className="text-xs opacity-75">{slot.name}</div>
+                  <div key={slot.time} className="space-y-1">
+                    <button
+                      onClick={() => handleSlotClick(slot, gazebo)}
+                      disabled={isDisabled}
+                      className={`w-full p-3 rounded-lg text-left transition-colors ${
+                        slot.isBooked
+                          ? isPastDate
+                            ? 'bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer border border-gray-300'
+                            : 'bg-orange-50 text-orange-800 hover:bg-orange-100 cursor-pointer border border-orange-200'
+                          : isPastDate
+                          ? 'bg-gray-50 text-gray-400 cursor-not-allowed'
+                          : userBooking
+                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                          : 'bg-green-50 text-green-800 hover:bg-green-100 active:bg-green-200'
+                      }`}
+                    >
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg">{slot.emoji}</span>
+                          <div>
+                            <div className="font-medium">{slot.time}</div>
+                            <div className="text-xs opacity-75">{slot.name}</div>
+                          </div>
                         </div>
+                        <span className="text-sm">
+                          {slot.isBooked ? '👤 Зайнято' : isPastDate ? '—' : '✓ Вільно'}
+                        </span>
                       </div>
-                      <span className="text-sm">
-                        {slot.isBooked ? '👤 Зайнято' : isPastDate ? '—' : '✓ Вільно'}
-                      </span>
-                    </div>
-                  </button>
+                    </button>
+
+                    {/* Кнопка підписки - показується ТІЛЬКИ якщо всі 3 альтанки зайняті */}
+                    {!isPastDate && isFullyBooked && !userBooking && (
+                      <button
+                        onClick={() => isSubscribed ? handleUnsubscribeClick(slot.time) : handleSubscribeClick(slot.time)}
+                        className={`w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                          isSubscribed
+                            ? 'bg-yellow-50 text-yellow-800 border border-yellow-300 hover:bg-yellow-100'
+                            : 'bg-blue-50 text-blue-800 border border-blue-300 hover:bg-blue-100'
+                        }`}
+                      >
+                        {isSubscribed ? '🔕 Відписатись від повідомлень' : '🔔 Підписатись на повідомлення'}
+                      </button>
+                    )}
+                  </div>
                 );
               })}
             </div>

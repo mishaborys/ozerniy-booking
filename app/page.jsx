@@ -6,6 +6,7 @@ import BookingForm from '@/components/BookingForm';
 import BookingDetails from '@/components/BookingDetails';
 import DatePicker from '@/components/DatePicker';
 import MyBookings from '@/components/MyBookings';
+import SubscriptionsManager from '@/components/SubscriptionsManager';
 import { startOfToday } from 'date-fns';
 
 export default function Home() {
@@ -18,6 +19,7 @@ export default function Home() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showMyBookings, setShowMyBookings] = useState(false);
+  const [showSubscriptions, setShowSubscriptions] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
 
   useEffect(() => {
@@ -196,6 +198,13 @@ export default function Home() {
           >
             📋 Мої бронювання
           </button>
+
+          <button
+            onClick={() => setShowSubscriptions(true)}
+            className="mt-2 w-full px-4 py-3 bg-purple-500 text-white rounded-lg font-medium hover:bg-purple-600"
+          >
+            🔔 Мої підписки
+          </button>
         </div>
 
         {/* Повідомлення про успішне бронювання */}
@@ -224,6 +233,7 @@ export default function Home() {
             <li>• Натисніть на зайнятий слот щоб побачити деталі</li>
             <li>• Бронювання доступне з 8:00 до 22:00</li>
             <li>• Можна скасувати своє бронювання</li>
+            <li>• 🔔 Підпишіться на повідомлення якщо всі альтанки зайняті</li>
           </ul>
         </div>
 
@@ -265,6 +275,14 @@ export default function Home() {
           <MyBookings
             userId={userData?.id}
             onClose={() => setShowMyBookings(false)}
+          />
+        )}
+
+        {/* Мої підписки */}
+        {showSubscriptions && (
+          <SubscriptionsManager
+            userId={userData?.id}
+            onClose={() => setShowSubscriptions(false)}
           />
         )}
       </div>
