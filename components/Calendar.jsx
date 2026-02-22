@@ -146,7 +146,7 @@ export default function Calendar({
       <div className="flex items-center justify-between bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-4">
         <button
           onClick={() => handleDateChange(-1)}
-          className="w-10 h-10 flex items-center justify-center rounded-xl text-blue-500 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors text-xl"
+          className="w-10 h-10 flex items-center justify-center rounded-xl text-violet-500 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/30 transition-colors text-xl"
         >
           ←
         </button>
@@ -166,7 +166,7 @@ export default function Calendar({
         <button
           onClick={() => handleDateChange(1)}
           disabled={isAfter(addDays(selectedDate, 1), maxDate)}
-          className="w-10 h-10 flex items-center justify-center rounded-xl text-blue-500 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors text-xl disabled:opacity-30 disabled:cursor-not-allowed"
+          className="w-10 h-10 flex items-center justify-center rounded-xl text-violet-500 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/30 transition-colors text-xl disabled:opacity-30 disabled:cursor-not-allowed"
         >
           →
         </button>
@@ -176,12 +176,12 @@ export default function Calendar({
       {userBooking && (
         <div
           onClick={() => onBookingClick(userBooking)}
-          className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
+          className="bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-800 rounded-xl p-4 cursor-pointer hover:bg-violet-100 dark:hover:bg-violet-900/30 transition-colors"
         >
-          <div className="text-sm text-blue-800 dark:text-blue-300 font-medium">
+          <div className="text-sm text-violet-800 dark:text-violet-300 font-medium">
             Ваше бронювання: {userBooking.gazebo_name}, {userBooking.time_slot}
           </div>
-          <div className="text-xs text-blue-600 dark:text-blue-400 mt-0.5">
+          <div className="text-xs text-violet-600 dark:text-violet-400 mt-0.5">
             Натисніть для деталей
           </div>
         </div>
@@ -191,7 +191,7 @@ export default function Calendar({
       <div className="space-y-4">
         {gazebos.map((gazebo) => (
           <div key={gazebo.id} className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-            <div className="bg-blue-500 text-white px-4 py-3 font-semibold text-sm">
+            <div className="bg-violet-500 text-white px-4 py-3 font-semibold text-sm">
               {gazebo.name}
             </div>
 
@@ -244,7 +244,7 @@ export default function Calendar({
                         className={`w-full px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
                           isSubscribed
                             ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800 hover:bg-yellow-100 dark:hover:bg-yellow-900/30'
-                            : 'bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/30'
+                            : 'bg-violet-50 dark:bg-violet-900/20 text-violet-800 dark:text-violet-300 border border-violet-200 dark:border-violet-800 hover:bg-violet-100 dark:hover:bg-violet-900/30'
                         }`}
                       >
                         {isSubscribed ? '🔕 Відписатись від повідомлень' : '🔔 Повідомити якщо звільниться'}

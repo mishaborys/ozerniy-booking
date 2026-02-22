@@ -17,7 +17,7 @@ export default function SubscriptionConfirmModal({ timeSlot, date, onConfirm, on
             </button>
           </div>
 
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl p-4 mb-4 space-y-1.5">
+          <div className="bg-violet-50 dark:bg-violet-900/20 border border-violet-100 dark:border-violet-800 rounded-xl p-4 mb-4 space-y-1.5">
             <div className="flex justify-between text-sm">
               <span className="text-gray-500 dark:text-gray-400">Дата:</span>
               <span className="font-semibold text-gray-900 dark:text-gray-100">{date}</span>
@@ -45,7 +45,7 @@ export default function SubscriptionConfirmModal({ timeSlot, date, onConfirm, on
             </button>
             <button
               onClick={onConfirm}
-              className="flex-1 px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-medium transition-colors"
+              className="flex-1 px-4 py-3 bg-violet-500 hover:bg-violet-600 text-white rounded-xl font-medium transition-colors"
             >
               Підписатись
             </button>

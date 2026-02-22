@@ -61,7 +61,7 @@ export default function BookingDetails({ booking, onClose, currentUserId }) {
 
           <div className="space-y-4">
             {/* Booking info */}
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl p-4 space-y-2">
+            <div className="bg-violet-50 dark:bg-violet-900/20 border border-violet-100 dark:border-violet-800 rounded-xl p-4 space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-500 dark:text-gray-400">Альтанка:</span>
                 <span className="font-semibold text-gray-900 dark:text-gray-100">{booking.gazebo_name}</span>
@@ -101,7 +101,7 @@ export default function BookingDetails({ booking, onClose, currentUserId }) {
                     <span className="text-gray-500 dark:text-gray-400">Телефон:</span>
                     <button
                       onClick={handleCopyPhone}
-                      className="font-medium text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 underline"
+                      className="font-medium text-violet-500 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 underline"
                     >
                       {booking.phone_number}
                     </button>
@@ -113,7 +113,7 @@ export default function BookingDetails({ booking, onClose, currentUserId }) {
                     <span className="text-gray-500 dark:text-gray-400">Telegram:</span>
                     <button
                       onClick={handleCopyTag}
-                      className="font-medium text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 underline"
+                      className="font-medium text-violet-500 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 underline"
                     >
                       @{booking.username}
                     </button>

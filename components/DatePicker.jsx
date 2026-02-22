@@ -111,9 +111,9 @@ export default function DatePicker({ selectedDate, onDateSelect, onClose }) {
                     ${isDisabled
                       ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
                       : isSelected
-                        ? 'bg-blue-500 text-white hover:bg-blue-600'
+                        ? 'bg-violet-500 text-white hover:bg-violet-600'
                         : isTodayDate
-                          ? 'border-2 border-blue-500 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30'
+                          ? 'border-2 border-violet-500 text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/30'
                           : 'text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700'
                     }
                   `}
@@ -127,11 +127,11 @@ export default function DatePicker({ selectedDate, onDateSelect, onClose }) {
           {/* Legend */}
           <div className="mt-4 flex gap-4 text-xs text-gray-500 dark:text-gray-400">
             <div className="flex items-center gap-1.5">
-              <div className="w-4 h-4 border-2 border-blue-500 rounded-lg" />
+              <div className="w-4 h-4 border-2 border-violet-500 rounded-lg" />
               <span>Сьогодні</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-4 h-4 bg-blue-500 rounded-lg" />
+              <div className="w-4 h-4 bg-violet-500 rounded-lg" />
               <span>Вибрано</span>
             </div>
           </div>

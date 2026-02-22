@@ -66,7 +66,7 @@ export default function SubscriptionsManager({ userId, onClose }) {
               {subscriptions.map((sub) => (
                 <div
                   key={sub.id}
-                  className="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl p-4"
+                  className="bg-violet-50 dark:bg-violet-900/20 border border-violet-100 dark:border-violet-800 rounded-xl p-4"
                 >
                   <div className="space-y-1.5 mb-3">
                     <div className="flex justify-between text-sm">

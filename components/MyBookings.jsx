@@ -80,7 +80,7 @@ export default function MyBookings({ userId, onClose }) {
               onClick={() => setActiveTab('active')}
               className={`px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px ${
                 activeTab === 'active'
-                  ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                  ? 'border-violet-500 text-violet-600 dark:text-violet-400'
                   : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >
@@ -90,7 +90,7 @@ export default function MyBookings({ userId, onClose }) {
               onClick={() => setActiveTab('history')}
               className={`px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px ${
                 activeTab === 'history'
-                  ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                  ? 'border-violet-500 text-violet-600 dark:text-violet-400'
                   : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >

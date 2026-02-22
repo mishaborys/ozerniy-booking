@@ -165,7 +165,7 @@ export default function Home() {
               Приєднайтесь до групи та спробуйте знову. Щоб стати учасником групи напишіть{' '}
               <button
                 onClick={handleCopyAdmin}
-                className="text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium underline cursor-pointer"
+                className="text-violet-500 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 font-medium underline cursor-pointer"
               >
                 @BurdaDmytro
               </button>
@@ -200,7 +200,7 @@ export default function Home() {
 
           <button
             onClick={() => setShowMyBookings(true)}
-            className="mt-4 w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-medium transition-colors"
+            className="mt-4 w-full px-4 py-3 bg-violet-500 hover:bg-violet-600 text-white rounded-xl font-medium transition-colors"
           >
             📋 Мої бронювання
           </button>
@@ -208,7 +208,7 @@ export default function Home() {
           {hasSubscriptions && (
             <button
               onClick={() => setShowSubscriptions(true)}
-              className="mt-2 w-full px-4 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-xl font-medium transition-colors"
+              className="mt-2 w-full px-4 py-3 bg-fuchsia-500 hover:bg-fuchsia-600 text-white rounded-xl font-medium transition-colors"
             >
               🔔 Мої підписки
             </button>
@@ -233,9 +233,9 @@ export default function Home() {
         />
 
         {/* Rules */}
-        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl p-4 mt-6">
-          <h3 className="font-semibold text-blue-900 dark:text-blue-300 mb-2">ℹ️ Правила бронювання:</h3>
-          <ul className="text-sm text-blue-800 dark:text-blue-400 space-y-1">
+        <div className="bg-violet-50 dark:bg-violet-900/20 border border-violet-100 dark:border-violet-800 rounded-xl p-4 mt-6">
+          <h3 className="font-semibold text-violet-900 dark:text-violet-300 mb-2">ℹ️ Правила бронювання:</h3>
+          <ul className="text-sm text-violet-800 dark:text-violet-400 space-y-1">
             <li>• Тривалість слоту: 3,5 години</li>
             <li>• Максимум 3 активних бронювання на користувача</li>
             <li>• Натисніть на зайнятий слот щоб побачити деталі</li>
