@@ -8,15 +8,12 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="uk">
+    <html lang="uk" className="dark">
       <head>
         <Script
           src="https://telegram.org/js/telegram-web-app.js"
           strategy="beforeInteractive"
         />
-        <script dangerouslySetInnerHTML={{ __html: `
-          document.documentElement.classList.add('dark');
-        ` }} />
       </head>
       <body>{children}</body>
     </html>
