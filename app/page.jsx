@@ -29,12 +29,8 @@ export default function Home() {
       tg.ready();
       tg.expand();
 
-      // Apply dark mode based on Telegram's color scheme
-      if (tg.colorScheme === 'dark') {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
+      // Always use dark mode
+      document.documentElement.classList.add('dark');
 
       const user = tg.initDataUnsafe?.user;
       if (user) {
@@ -47,10 +43,8 @@ export default function Home() {
 
       tg.MainButton.hide();
     } else {
-      // Test mode: use system preference
-      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.documentElement.classList.add('dark');
-      }
+      // Test mode: always dark
+      document.documentElement.classList.add('dark');
       const testUser = {
         id: 123456789,
         first_name: 'Тест',
