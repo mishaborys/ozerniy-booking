@@ -1,11 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isToday, isBefore, startOfToday } from 'date-fns';
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isToday, isBefore, isAfter, addDays, startOfToday } from 'date-fns';
 import { uk } from 'date-fns/locale';
 
 export default function DatePicker({ selectedDate, onDateSelect, onClose }) {
   const [currentMonth, setCurrentMonth] = useState(selectedDate);
+
+  const today = startOfToday();
+  const maxDate = addDays(today, 45);
 
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(currentMonth);
@@ -23,11 +26,13 @@ export default function DatePicker({ selectedDate, onDateSelect, onClose }) {
 
   const handleNextMonth = () => {
     const newMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1);
-    setCurrentMonth(newMonth);
+    if (!isAfter(startOfMonth(newMonth), maxDate)) {
+      setCurrentMonth(newMonth);
+    }
   };
 
   const handleDateClick = (date) => {
-    if (!isBefore(date, startOfToday())) {
+    if (!isBefore(date, today) && !isAfter(date, maxDate)) {
       onDateSelect(date);
       onClose();
     }
@@ -91,7 +96,9 @@ export default function DatePicker({ selectedDate, onDateSelect, onClose }) {
 
             {/* Дні місяця */}
             {daysInMonth.map((day) => {
-              const isPast = isBefore(day, startOfToday());
+              const isPast = isBefore(day, today);
+              const isTooFar = isAfter(day, maxDate);
+              const isDisabled = isPast || isTooFar;
               const isSelected = isSameDay(day, selectedDate);
               const isTodayDate = isToday(day);
 
@@ -99,22 +106,22 @@ export default function DatePicker({ selectedDate, onDateSelect, onClose }) {
                 <button
                   key={day.toString()}
                   onClick={() => handleDateClick(day)}
-                  disabled={isPast}
+                  disabled={isDisabled}
                   style={{
-                    color: isPast ? '#cccccc' : isSelected ? '#ffffff' : '#000000'
+                    color: isDisabled ? '#cccccc' : isSelected ? '#ffffff' : '#000000'
                   }}
                   className={`
                     aspect-square p-2 rounded-lg text-sm font-medium
-                    ${isPast 
-                      ? 'text-gray-300 cursor-not-allowed' 
+                    ${isDisabled
+                      ? 'text-gray-300 cursor-not-allowed'
                       : 'hover:bg-blue-100 cursor-pointer'
                     }
-                    ${isSelected 
-                      ? 'bg-blue-500 text-white hover:bg-blue-600' 
+                    ${isSelected
+                      ? 'bg-blue-500 text-white hover:bg-blue-600'
                       : ''
                     }
-                    ${isTodayDate && !isSelected 
-                      ? 'border-2 border-blue-500 text-blue-600' 
+                    ${isTodayDate && !isSelected
+                      ? 'border-2 border-blue-500 text-blue-600'
                       : ''
                     }
                   `}

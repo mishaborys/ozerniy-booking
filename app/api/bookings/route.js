@@ -94,6 +94,19 @@ export async function POST(request) {
       }
     }
     
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const maxDate = new Date(today);
+    maxDate.setDate(maxDate.getDate() + 45);
+    const requestedDate = new Date(data.bookingDate);
+    requestedDate.setHours(0, 0, 0, 0);
+    if (requestedDate > maxDate) {
+      return NextResponse.json(
+        { error: 'Бронювання доступне лише на 45 днів вперед' },
+        { status: 400 }
+      );
+    }
+
     const booking = await createBooking(data);
 
     console.log('✅ Booking created successfully:', booking.id);

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { format, addDays, startOfToday, isBefore } from 'date-fns';
+import { format, addDays, startOfToday, isBefore, isAfter } from 'date-fns';
 import { uk } from 'date-fns/locale';
 import SubscriptionConfirmModal from './SubscriptionConfirmModal';
 
@@ -54,9 +54,11 @@ export default function Calendar({
     }
   };
 
+  const maxDate = addDays(startOfToday(), 45);
+
   const handleDateChange = (days) => {
     const newDate = addDays(selectedDate, days);
-    // Дозволяємо перегляд будь-яких дат (включно з минулими)
+    if (days > 0 && isAfter(newDate, maxDate)) return;
     onDateChange(newDate);
   };
 
@@ -203,7 +205,8 @@ export default function Calendar({
         
         <button
           onClick={() => handleDateChange(1)}
-          className="text-2xl text-tg-button"
+          disabled={isAfter(addDays(selectedDate, 1), maxDate)}
+          className="text-2xl text-tg-button disabled:opacity-30"
           style={{ color: '#40a7e3' }}
         >
           →
@@ -236,7 +239,8 @@ export default function Calendar({
             <div className="p-2 space-y-2">
               {gazebo.slots.map((slot) => {
                 const isPastDate = isBefore(selectedDate, startOfToday());
-                const isDisabled = !slot.isBooked && (userBooking || isPastDate);
+                const isTooFarAhead = isAfter(selectedDate, maxDate);
+                const isDisabled = !slot.isBooked && (userBooking || isPastDate || isTooFarAhead);
                 const isFullyBooked = isSlotFullyBooked(slot.time);
                 const isSubscribed = isUserSubscribedToSlot(slot.time);
 
@@ -272,7 +276,7 @@ export default function Calendar({
                     </button>
 
                     {/* Кнопка підписки - показується ТІЛЬКИ якщо всі 3 альтанки зайняті */}
-                    {!isPastDate && isFullyBooked && !userBooking && (
+                    {!isPastDate && !isTooFarAhead && isFullyBooked && !userBooking && (
                       <button
                         onClick={() => isSubscribed ? handleUnsubscribeClick(slot.time) : handleSubscribeClick(slot.time)}
                         className={`w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
