@@ -14,9 +14,7 @@ export default function DatePicker({ selectedDate, onDateSelect, onClose }) {
   const monthEnd = endOfMonth(currentMonth);
   const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd });
 
-  // Отримуємо день тижня для першого дня місяця (0 = неділя)
   const firstDayOfWeek = monthStart.getDay();
-  // Конвертуємо в формат, де понеділок = 0
   const offset = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
 
   const handlePrevMonth = () => {
@@ -38,63 +36,64 @@ export default function DatePicker({ selectedDate, onDateSelect, onClose }) {
     }
   };
 
+  const isNextMonthDisabled = isAfter(
+    startOfMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)),
+    maxDate
+  );
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full" style={{ backgroundColor: '#ffffff' }}>
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-md w-full">
         <div className="p-6">
-          {/* Заголовок */}
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold text-gray-900" style={{ color: '#000000' }}>Виберіть дату</h2>
+          {/* Header */}
+          <div className="flex justify-between items-center mb-5">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Виберіть дату</h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 text-2xl"
+              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-2xl leading-none"
             >
               ×
             </button>
           </div>
 
-          {/* Навігація по місяцях */}
+          {/* Month navigation */}
           <div className="flex items-center justify-between mb-4">
             <button
               onClick={handlePrevMonth}
-              className="p-2 hover:bg-gray-100 rounded-lg"
-              style={{ color: '#000000' }}
+              className="w-9 h-9 flex items-center justify-center rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
               ←
             </button>
-            <div className="text-lg font-semibold" style={{ color: '#000000' }}>
+            <div className="text-base font-semibold text-gray-900 dark:text-gray-100 capitalize">
               {format(currentMonth, 'LLLL yyyy', { locale: uk })}
             </div>
             <button
               onClick={handleNextMonth}
-              className="p-2 hover:bg-gray-100 rounded-lg"
-              style={{ color: '#000000' }}
+              disabled={isNextMonthDisabled}
+              className="w-9 h-9 flex items-center justify-center rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             >
               →
             </button>
           </div>
 
-          {/* Дні тижня */}
-          <div className="grid grid-cols-7 gap-1 mb-2">
+          {/* Day headers */}
+          <div className="grid grid-cols-7 gap-1 mb-1">
             {['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'].map((day) => (
               <div
                 key={day}
-                className="text-center text-sm font-medium text-gray-600 py-2"
-                style={{ color: '#666666' }}
+                className="text-center text-xs font-medium text-gray-500 dark:text-gray-400 py-2"
               >
                 {day}
               </div>
             ))}
           </div>
 
-          {/* Дні місяця */}
+          {/* Days grid */}
           <div className="grid grid-cols-7 gap-1">
-            {/* Пусті клітинки перед першим днем */}
             {Array.from({ length: offset }).map((_, i) => (
               <div key={`empty-${i}`} />
             ))}
 
-            {/* Дні місяця */}
             {daysInMonth.map((day) => {
               const isPast = isBefore(day, today);
               const isTooFar = isAfter(day, maxDate);
@@ -107,22 +106,15 @@ export default function DatePicker({ selectedDate, onDateSelect, onClose }) {
                   key={day.toString()}
                   onClick={() => handleDateClick(day)}
                   disabled={isDisabled}
-                  style={{
-                    color: isDisabled ? '#cccccc' : isSelected ? '#ffffff' : '#000000'
-                  }}
                   className={`
-                    aspect-square p-2 rounded-lg text-sm font-medium
+                    aspect-square p-1 rounded-xl text-sm font-medium transition-colors
                     ${isDisabled
-                      ? 'text-gray-300 cursor-not-allowed'
-                      : 'hover:bg-blue-100 cursor-pointer'
-                    }
-                    ${isSelected
-                      ? 'bg-blue-500 text-white hover:bg-blue-600'
-                      : ''
-                    }
-                    ${isTodayDate && !isSelected
-                      ? 'border-2 border-blue-500 text-blue-600'
-                      : ''
+                      ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                      : isSelected
+                        ? 'bg-blue-500 text-white hover:bg-blue-600'
+                        : isTodayDate
+                          ? 'border-2 border-blue-500 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30'
+                          : 'text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700'
                     }
                   `}
                 >
@@ -132,14 +124,14 @@ export default function DatePicker({ selectedDate, onDateSelect, onClose }) {
             })}
           </div>
 
-          {/* Легенда */}
-          <div className="mt-4 flex gap-4 text-xs text-gray-600" style={{ color: '#666666' }}>
-            <div className="flex items-center gap-1">
-              <div className="w-4 h-4 border-2 border-blue-500 rounded"></div>
+          {/* Legend */}
+          <div className="mt-4 flex gap-4 text-xs text-gray-500 dark:text-gray-400">
+            <div className="flex items-center gap-1.5">
+              <div className="w-4 h-4 border-2 border-blue-500 rounded-lg" />
               <span>Сьогодні</span>
             </div>
-            <div className="flex items-center gap-1">
-              <div className="w-4 h-4 bg-blue-500 rounded"></div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-4 h-4 bg-blue-500 rounded-lg" />
               <span>Вибрано</span>
             </div>
           </div>

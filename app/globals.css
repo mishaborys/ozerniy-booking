@@ -3,10 +3,18 @@
 @tailwind utilities;
 
 :root {
-  --tg-theme-bg-color: #ffffff;
-  --tg-theme-text-color: #000000;
-  --tg-theme-hint-color: #999999;
-  --tg-theme-button-color: #40a7e3;
+  --tg-theme-bg-color: #f9fafb;
+  --tg-theme-text-color: #111827;
+  --tg-theme-hint-color: #6b7280;
+  --tg-theme-button-color: #3b82f6;
+  --tg-theme-button-text-color: #ffffff;
+}
+
+.dark {
+  --tg-theme-bg-color: #111827;
+  --tg-theme-text-color: #f3f4f6;
+  --tg-theme-hint-color: #9ca3af;
+  --tg-theme-button-color: #3b82f6;
   --tg-theme-button-text-color: #ffffff;
 }
 
@@ -18,29 +26,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--tg-theme-bg-color);
-  color: var(--tg-theme-text-color);
 }
 
 * {
   box-sizing: border-box;
-}
-
-/* Виправлення для попапів (DatePicker, BookingForm, тощо) */
-.bg-white {
-  background-color: #ffffff !important;
-}
-
-/* Анімація для успішного повідомлення */
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.8;
-  }
-}
-
-.animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
