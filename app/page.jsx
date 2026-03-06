@@ -57,20 +57,23 @@ export default function Home() {
   }, []);
 
   const checkMembership = async (userId) => {
-    try {
-      const response = await fetch('/api/check-member', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId }),
-      });
-      const data = await response.json();
-      setIsMember(data.isMember);
-    } catch (error) {
-      console.error('Failed to check membership:', error);
-      setIsMember(false);
-    } finally {
-      setLoading(false);
-    }
+    // TODO: re-enable membership check after testing
+    setIsMember(true);
+    setLoading(false);
+    // try {
+    //   const response = await fetch('/api/check-member', {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify({ userId }),
+    //   });
+    //   const data = await response.json();
+    //   setIsMember(data.isMember);
+    // } catch (error) {
+    //   console.error('Failed to check membership:', error);
+    //   setIsMember(false);
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   useEffect(() => {
